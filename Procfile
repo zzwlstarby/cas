@@ -1,1 +1,1 @@
-web:    java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --expanded-dir-name cas-services --expand-war --path /cas-services --port $PORT target/*.war
+web:    java $JAVA_OPTS -jar target/cas.war --server.ssl.enabled=false --cas.server.http.enabled=false --cas.server.name=https://jasigcas.herokuapp.com --logging.level.org.apereo=DEBUG --server.port=$PORT --cas.mgmt.serverName=https://jasigcasmgmt.herokuapp.com --cas.mgmt.userPropertiesFile=classpath:/user-details.properties
