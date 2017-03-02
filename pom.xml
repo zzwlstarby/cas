@@ -57,7 +57,7 @@
                     <arguments>
                         <argument>-Rf</argument>
                         <argument>./target/war</argument>
-                        <argument>./target/cas</argument>
+                        <argument>./target/cas-management</argument>
                     </arguments>
                 </configuration>
             </plugin>
