@@ -9,6 +9,8 @@ bin/
 *.iml
 *.iws
 *.orig
+.history
+.vscode
 .idea/
 target/
 .DS_Store
