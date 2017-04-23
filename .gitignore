@@ -19,6 +19,8 @@ pom.xml.versionsBackup
 build.xml
 *.log
 rebel.xml
+.history
+.vscode
 **/.checkstyle
 *.log.gz
 node_modules/
