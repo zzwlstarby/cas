@@ -1,4 +1,4 @@
-casVersion: 5.1.0
+casVersion: 5.1.4
 
 
 casServerConfigPropertiesEndpoint: "https://jasigcas.herokuapp.com/cas/status/configprops"
