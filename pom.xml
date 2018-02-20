@@ -94,7 +94,7 @@
     </dependencies>
 
     <properties>
-        <cas.version>5.2.0</cas.version>
+        <cas.version>5.2.2</cas.version>
         <springboot.version>1.5.8.RELEASE</springboot.version>
         <mainClassName>org.springframework.boot.loader.WarLauncher</mainClassName>
         <isExecutable>false</isExecutable>
