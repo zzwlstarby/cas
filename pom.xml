@@ -94,8 +94,8 @@
     </dependencies>
 
     <properties>
-        <cas.version>5.2.2</cas.version>
-        <springboot.version>1.5.8.RELEASE</springboot.version>
+        <cas.version>5.2.4</cas.version>
+        <springboot.version>1.5.12.RELEASE</springboot.version>
         <mainClassName>org.springframework.boot.loader.WarLauncher</mainClassName>
         <isExecutable>false</isExecutable>
         <manifestFileToUse>${project.build.directory}/war/work/org.apereo.cas/cas-management-webapp/META-INF/MANIFEST.MF</manifestFileToUse>
