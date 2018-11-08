@@ -29,6 +29,5 @@ build/
 MANIFEST.MF
 classes/
 *.bin
-
 **/tomcat/
 out

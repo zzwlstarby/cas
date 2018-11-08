@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url "https://repo.spring.io/libs-milestone" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${project.springBootVersion}"
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
+    maven { url "https://repo.spring.io/milestone/" }
+    maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
+}
+
+apply from: "https://dl.bintray.com/scalding/generic/waroverlay.gradle"
+
+apply plugin: "war"
+apply plugin: "org.springframework.boot"
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+war {
+    includeWarJars = true
+    entryCompression = ZipEntryCompression.STORED
+}
+
+springBoot {
+    mainClassName = "org.apereo.cas.mgmt.web.CasManagementWebApplication"
+}
+
+bootWar {
+	if (project.hasProperty('executable')) {
+    	launchScript()
+	}
+
+	archiveName "cas-management.war"
+    baseName "cas-management"
+
+    excludeDevtools = false
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = "${project.gradleVersion}"
+}
+
+dependencies {
+    compile group: "org.apereo.cas", name: "cas-mgmt-webapp", version: "${project.'casmgmt.version'}", changing: true
+}
