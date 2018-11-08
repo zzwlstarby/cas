@@ -1,10 +1,12 @@
 buildscript {
     repositories {
         mavenLocal()
+        mavenCentral()
         jcenter()
         maven { url "https://repo.spring.io/milestone/" }
         maven { url "https://repo.spring.io/libs-milestone" }
         maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
+        maven { url "https://repo.spring.io/snapshot" }
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${project.springBootVersion}"
