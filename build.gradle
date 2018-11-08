@@ -24,6 +24,7 @@ apply from: "https://dl.bintray.com/scalding/generic/waroverlay.gradle"
 
 apply plugin: "war"
 apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -55,5 +56,5 @@ wrapper {
 }
 
 dependencies {
-    compile group: "org.apereo.cas", name: "cas-mgmt-webapp", version: "${project.'casmgmt.version'}", changing: true
+    compile group: "org.apereo.cas", name: "cas-mgmt-webapp", version: "${project.'casmgmt.version'}@war", changing: true
 }
