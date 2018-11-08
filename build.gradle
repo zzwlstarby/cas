@@ -14,8 +14,8 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://build.shibboleth.net/nexus/content/repositories/releases/" }
     maven { url "https://repo.spring.io/milestone/" }
     maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
 }
@@ -56,5 +56,5 @@ wrapper {
 }
 
 dependencies {
-    compile group: "org.apereo.cas", name: "cas-mgmt-webapp", version: "${project.'casmgmt.version'}@war", changing: true
+    compile group: "org.apereo.cas", name: "cas-mgmt-webapp-tomcat", version: "${project.'casmgmt.version'}", changing: true
 }
