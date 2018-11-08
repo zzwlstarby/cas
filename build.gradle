@@ -29,6 +29,7 @@ apply plugin: "io.spring.dependency-management"
 dependencyManagement {
 	imports {
 		mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        mavenBom "org.apereo.cas:cas-server-support-bom:${project.'cas.version'}"
 	}
 }
 
