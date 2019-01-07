@@ -8,6 +8,7 @@ import org.apereo.cas.util.HttpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.tuple.Pair;
 
 import org.springframework.http.HttpStatus;
 
@@ -29,9 +30,9 @@ public class RestMultifactorAuthenticationProviderBypass implements MultifactorA
     private final MultifactorAuthenticationProviderBypassProperties bypassProperties;
 
     @Override
-    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication, final RegisteredService registeredService,
-                                                                  final MultifactorAuthenticationProvider provider,
-                                                                  final HttpServletRequest request) {
+    public Pair<Boolean, String> shouldMultifactorAuthenticationProviderExecute(final Authentication authentication, final RegisteredService registeredService,
+                                                                                final MultifactorAuthenticationProvider provider,
+                                                                                final HttpServletRequest request) {
         try {
             val principal = authentication.getPrincipal();
             val rest = bypassProperties.getRest();
@@ -46,10 +47,13 @@ public class RestMultifactorAuthenticationProviderBypass implements MultifactorA
 
             val response = HttpUtils.execute(rest.getUrl(), rest.getMethod(),
                 rest.getBasicAuthUsername(), rest.getBasicAuthPassword(), parameters, new HashMap<>());
-            return response.getStatusLine().getStatusCode() == HttpStatus.ACCEPTED.value();
+            val shouldExecute = response.getStatusLine().getStatusCode() == HttpStatus.ACCEPTED.value();
+            if (!shouldExecute) {
+                return Pair.of(Boolean.FALSE, "REST");
+            }
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
-            return true;
         }
+        return Pair.of(Boolean.TRUE, null);
     }
 }

@@ -6,6 +6,7 @@ import org.apereo.cas.util.scripting.WatchableGroovyScriptResource;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,20 +28,23 @@ public class GroovyMultifactorAuthenticationProviderBypass implements Multifacto
     }
 
     @Override
-    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
-                                                                  final RegisteredService registeredService,
-                                                                  final MultifactorAuthenticationProvider provider,
-                                                                  final HttpServletRequest request) {
+    public Pair<Boolean, String> shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
+                                                                                final RegisteredService registeredService,
+                                                                                final MultifactorAuthenticationProvider provider,
+                                                                                final HttpServletRequest request) {
         try {
             val principal = authentication.getPrincipal();
             LOGGER.debug("Evaluating multifactor authentication bypass properties for principal [{}], "
                     + "service [{}] and provider [{}] via Groovy script [{}]",
                 principal.getId(), registeredService, provider, watchableScript.getResource());
             val args = new Object[]{authentication, principal, registeredService, provider, LOGGER, request};
-            return watchableScript.execute(args, Boolean.class);
+            val shouldExecute = watchableScript.execute(args, Boolean.class);
+            if (!shouldExecute) {
+                return Pair.of(Boolean.FALSE, "GROOVY");
+            }
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
-            return true;
         }
+        return Pair.of(Boolean.TRUE, null);
     }
 }

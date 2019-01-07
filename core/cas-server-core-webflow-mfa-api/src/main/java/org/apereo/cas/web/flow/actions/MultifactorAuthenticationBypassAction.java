@@ -30,13 +30,14 @@ public class MultifactorAuthenticationBypassAction extends AbstractMultifactorAu
         if (requestContext.getCurrentTransition().getId().equals(CasWebflowConstants.TRANSITION_ID_BYPASS)) {
             LOGGER.debug("Bypass triggered by MFA webflow for MFA for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());
-            bypass.updateAuthenticationToRememberBypass(authentication, provider);
+            bypass.updateAuthenticationToRememberBypass(authentication, provider, "WEBFLOW");
             LOGGER.debug("Authentication updated to remember bypass for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());
             return yes();
         }
 
-        if (bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request)) {
+        val result = bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request);
+        if (result.getKey()) {
             LOGGER.debug("Bypass rules determined MFA should execute for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());
             bypass.updateAuthenticationToForgetBypass(authentication);
@@ -46,7 +47,7 @@ public class MultifactorAuthenticationBypassAction extends AbstractMultifactorAu
         }
         LOGGER.debug("Bypass rules determined MFA should NOT execute for user [{}] for provider [{}]",
                 authentication.getPrincipal().getId(), provider.getId());
-        bypass.updateAuthenticationToRememberBypass(authentication, provider);
+        bypass.updateAuthenticationToRememberBypass(authentication, provider, result.getValue());
         LOGGER.debug("Authentication updated to remember bypass for user [{}] for provider [{}]",
                 authentication.getPrincipal().getId(), provider.getId());
         return yes();

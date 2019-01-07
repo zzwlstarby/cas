@@ -9,6 +9,7 @@ import org.apereo.cas.util.RegexUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.core.Ordered;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,23 +49,23 @@ public class DefaultMultifactorAuthenticationProviderBypass implements Multifact
     }
 
     @Override
-    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
-                                                                  final RegisteredService registeredService,
-                                                                  final MultifactorAuthenticationProvider provider,
-                                                                  final HttpServletRequest request) {
+    public Pair<Boolean, String> shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
+                                                                                final RegisteredService registeredService,
+                                                                                final MultifactorAuthenticationProvider provider,
+                                                                                final HttpServletRequest request) {
         val principal = authentication.getPrincipal();
         LOGGER.debug("Evaluating multifactor authentication bypass properties for principal [{}], service [{}] and provider [{}]",
             principal.getId(), registeredService, provider);
         val bypassByPrincipal = locateMatchingAttributeBasedOnPrincipalAttributes(bypassProperties, principal);
         if (bypassByPrincipal) {
             LOGGER.debug("Bypass rules for principal [{}] indicate the request may be ignored", principal.getId());
-            return false;
+            return Pair.of(Boolean.FALSE, "PRINCIPAL");
         }
 
         val bypassByAuthn = locateMatchingAttributeBasedOnAuthenticationAttributes(bypassProperties, authentication);
         if (bypassByAuthn) {
             LOGGER.debug("Bypass rules for authentication for principal [{}] indicate the request may be ignored", principal.getId());
-            return false;
+            return Pair.of(Boolean.FALSE, "AUTHENTICATION_PRINCIPAL");
         }
 
         val bypassByAuthnMethod = locateMatchingAttributeValue(
@@ -74,7 +75,7 @@ public class DefaultMultifactorAuthenticationProviderBypass implements Multifact
         );
         if (bypassByAuthnMethod) {
             LOGGER.debug("Bypass rules for authentication method [{}] indicate the request may be ignored", bypassProperties.getAuthenticationMethodName());
-            return false;
+            return Pair.of(Boolean.FALSE, "AUTHENTICATION_METHOD");
         }
 
         val bypassByHandlerName = locateMatchingAttributeValue(
@@ -84,27 +85,27 @@ public class DefaultMultifactorAuthenticationProviderBypass implements Multifact
         );
         if (bypassByHandlerName) {
             LOGGER.debug("Bypass rules for authentication handlers [{}] indicate the request may be ignored", bypassProperties.getAuthenticationHandlerName());
-            return false;
+            return Pair.of(Boolean.FALSE, "AUTHENTICATION_HANDLER");
         }
 
         val bypassByCredType = locateMatchingCredentialType(authentication, bypassProperties.getCredentialClassType());
         if (bypassByCredType) {
             LOGGER.debug("Bypass rules for credential types [{}] indicate the request may be ignored", bypassProperties.getCredentialClassType());
-            return false;
+            return Pair.of(Boolean.FALSE, "CREDENTIAL_TYPE");
         }
 
         val bypassByHttpRequest = locateMatchingHttpRequest(authentication, request);
         if (bypassByHttpRequest) {
             LOGGER.debug("Bypass rules for http request indicate the request may be ignored for [{}]", principal.getId());
-            return false;
+            return Pair.of(Boolean.FALSE, "HTTP_REQUEST");
         }
 
         val bypassByService = locateMatchingRegisteredServiceForBypass(authentication, registeredService);
         if (bypassByService) {
-            return false;
+            return Pair.of(Boolean.FALSE, "SERVICE:" + registeredService.getId());
         }
 
-        return true;
+        return Pair.of(Boolean.TRUE, null);
     }
 
     /**
