@@ -49,6 +49,6 @@ public class DefaultRequestedAuthenticationContextValidator implements Requested
             }
         }
 
-        return authenticationContextValidator.validate(authentication, requestedContext.get(), registeredService);
+        return authenticationContextValidator.validate(authentication, providerId, registeredService);
     }
 }

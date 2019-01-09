@@ -32,7 +32,6 @@ public class ServiceMultifactorAuthenticationProviderBypass implements Multifact
         if (registeredService != null
                 && registeredService.getMultifactorPolicy() != null
                 && registeredService.getMultifactorPolicy().isBypassEnabled()) {
-            setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "SERVICE:" + registeredService.getId()));
             return false;
         }
         return true;

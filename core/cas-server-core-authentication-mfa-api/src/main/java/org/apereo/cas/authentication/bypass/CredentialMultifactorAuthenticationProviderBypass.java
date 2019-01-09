@@ -34,7 +34,6 @@ public class CredentialMultifactorAuthenticationProviderBypass implements Multif
         val bypassByCredType = locateMatchingCredentialType(authentication, bypassProperties.getCredentialClassType());
         if (bypassByCredType) {
             LOGGER.debug("Bypass rules for credential types [{}] indicate the request may be ignored", bypassProperties.getCredentialClassType());
-            setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "CREDENTIAL_TYPE"));
             return false;
         }
 

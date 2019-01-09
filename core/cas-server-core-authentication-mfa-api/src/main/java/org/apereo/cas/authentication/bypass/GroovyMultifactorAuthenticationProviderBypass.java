@@ -40,11 +40,7 @@ public class GroovyMultifactorAuthenticationProviderBypass implements Multifacto
                     + "service [{}] and provider [{}] via Groovy script [{}]",
                 principal.getId(), registeredService, provider, watchableScript.getResource());
             val args = new Object[]{authentication, principal, registeredService, provider, LOGGER, request};
-            val shouldExecute = watchableScript.execute(args, Boolean.class);
-            if (!shouldExecute) {
-                setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "GROOVY"));
-            }
-            return shouldExecute;
+            return watchableScript.execute(args, Boolean.class);
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
             return true;

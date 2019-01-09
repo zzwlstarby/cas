@@ -36,7 +36,6 @@ public class AuthenticationMultifactorAuthenticationProviderBypass implements Mu
         val bypassByAuthn = locateMatchingAttributeBasedOnAuthenticationAttributes(bypassProperties, authentication);
         if (bypassByAuthn) {
             LOGGER.debug("Bypass rules for authentication for principal [{}] indicate the request may be ignored", principal.getId());
-            setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "AUTHENTICATION_PRINCIPAL"));
             return false;
         }
 
@@ -47,7 +46,6 @@ public class AuthenticationMultifactorAuthenticationProviderBypass implements Mu
         );
         if (bypassByAuthnMethod) {
             LOGGER.debug("Bypass rules for authentication method [{}] indicate the request may be ignored", bypassProperties.getAuthenticationMethodName());
-            setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "AUTHENTICATION_METHOD"));
             return false;
         }
 
@@ -58,7 +56,6 @@ public class AuthenticationMultifactorAuthenticationProviderBypass implements Mu
         );
         if (bypassByHandlerName) {
             LOGGER.debug("Bypass rules for authentication handlers [{}] indicate the request may be ignored", bypassProperties.getAuthenticationHandlerName());
-            setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "AUTHENTICATION_HANDLER"));
             return false;
         }
 

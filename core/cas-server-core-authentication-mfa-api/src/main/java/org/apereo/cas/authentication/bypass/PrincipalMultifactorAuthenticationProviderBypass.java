@@ -37,7 +37,6 @@ public class PrincipalMultifactorAuthenticationProviderBypass implements Multifa
                 bypassProperties.getPrincipalAttributeValue(), principal.getAttributes(), true);
         if (bypass) {
             LOGGER.debug("Bypass rules for principal [{}] indicate the request may be ignored", principal.getId());
-            setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "PRINCIPAL"));
             return false;
         }
         return true;

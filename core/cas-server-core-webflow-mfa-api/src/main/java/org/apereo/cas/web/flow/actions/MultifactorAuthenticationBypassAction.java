@@ -1,6 +1,5 @@
 package org.apereo.cas.web.flow.actions;
 
-import org.apereo.cas.authentication.bypass.DefaultMultifactorAuthenticatonBypassResult;
 import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.support.WebUtils;
 
@@ -31,7 +30,6 @@ public class MultifactorAuthenticationBypassAction extends AbstractMultifactorAu
         if (requestContext.getCurrentTransition().getId().equals(CasWebflowConstants.TRANSITION_ID_BYPASS)) {
             LOGGER.debug("Bypass triggered by MFA webflow for MFA for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());
-            bypass.setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "WEBFLOW"));
             return yes();
         }
 
@@ -39,7 +37,6 @@ public class MultifactorAuthenticationBypassAction extends AbstractMultifactorAu
         if (result) {
             LOGGER.debug("Bypass rules determined MFA should execute for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());
-            bypass.clearBypass(authentication);
             return no();
         }
         LOGGER.debug("Bypass rules determined MFA should NOT execute for user [{}] for provider [{}]",

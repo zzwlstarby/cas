@@ -49,11 +49,7 @@ public class RestMultifactorAuthenticationProviderBypass implements MultifactorA
 
             val response = HttpUtils.execute(rest.getUrl(), rest.getMethod(),
                 rest.getBasicAuthUsername(), rest.getBasicAuthPassword(), parameters, new HashMap<>());
-            val shouldExecute = response.getStatusLine().getStatusCode() == HttpStatus.ACCEPTED.value();
-            if (!shouldExecute) {
-                setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "REST"));
-            }
-            return shouldExecute;
+            return response.getStatusLine().getStatusCode() == HttpStatus.ACCEPTED.value();
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
             return true;

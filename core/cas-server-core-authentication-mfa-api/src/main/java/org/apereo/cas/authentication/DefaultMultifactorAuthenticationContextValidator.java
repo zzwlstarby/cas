@@ -75,22 +75,6 @@ public class DefaultMultifactorAuthenticationContextValidator implements Multifa
             LOGGER.debug("Requested authentication context [{}] is satisfied since device is already trusted", requestedContext);
             return Pair.of(Boolean.TRUE, requestedProvider);
         }
-        if (attributes.containsKey(MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA)) {
-            val bypass = MultifactorAuthenticationBypassResult.class.cast(
-                    CollectionUtils.firstElement(attributes.get(MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA)).get()
-            );
-            LOGGER.trace("Found multifactor authentication bypass attributes for provider [{}]", bypass.getProviderId());
-            if (StringUtils.equals(bypass.getProviderId(), requestedContext)) {
-                if (!bypass.getOrigin().equals("SERVICE:" + service.getId())) {
-                    LOGGER.debug("Bypass was found for [{}] based on service [{}], but requested service is [{}]", requestedContext, bypass.getOrigin(), service.getId());
-                    return Pair.of(Boolean.FALSE, requestedProvider);
-                }
-                LOGGER.debug("Requested authentication context [{}] is satisfied given mfa was bypassed for the authentication attempt", requestedContext);
-                return Pair.of(Boolean.TRUE, requestedProvider);
-            }
-            LOGGER.debug("Either multifactor authentication was not bypassed or the requested context [{}] does not match the bypassed provider [{}]",
-                requestedProvider, bypass.getProviderId());
-        }
         val satisfiedProviders = getSatisfiedAuthenticationProviders(authentication, providerMap.values());
         if (satisfiedProviders != null && !satisfiedProviders.isEmpty()) {
             val providers = satisfiedProviders.toArray(MultifactorAuthenticationProvider[]::new);

@@ -179,10 +179,10 @@ public class MultifactorAuthenticationUtils {
         if (StringUtils.isNotBlank(props.getHttpRequestHeaders()) || StringUtils.isNotBlank(props.getHttpRequestRemoteAddress())) {
             bypass.addBypass(new HttpRequestMultifactorAuthenticationProviderBypass(props));
         }
-        if (props.getGroovy() != null) {
+        if (props.getGroovy().getLocation() != null) {
             bypass.addBypass(new GroovyMultifactorAuthenticationProviderBypass(props));
         }
-        if (props.getRest() != null) {
+        if (StringUtils.isNotBlank(props.getRest().getUrl())) {
             bypass.addBypass(new RestMultifactorAuthenticationProviderBypass(props));
         }
         return bypass;

@@ -52,7 +52,6 @@ public class HttpRequestMultifactorAuthenticationProviderBypass implements Multi
         val bypassByHttpRequest = locateMatchingHttpRequest(authentication, request);
         if (bypassByHttpRequest) {
             LOGGER.debug("Bypass rules for http request indicate the request may be ignored for [{}]", principal.getId());
-            setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "HTTP_REQUEST"));
             return false;
         }
 
