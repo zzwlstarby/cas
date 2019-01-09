@@ -31,7 +31,6 @@ public class CredentialMultifactorAuthenticationProviderBypass implements Multif
                                  final RegisteredService registeredService,
                                  final MultifactorAuthenticationProvider provider,
                                  final HttpServletRequest request) {
-        val principal = authentication.getPrincipal();
         val bypassByCredType = locateMatchingCredentialType(authentication, bypassProperties.getCredentialClassType());
         if (bypassByCredType) {
             LOGGER.debug("Bypass rules for credential types [{}] indicate the request may be ignored", bypassProperties.getCredentialClassType());
