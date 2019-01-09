@@ -1,5 +1,6 @@
 package org.apereo.cas.web.flow.actions;
 
+import org.apereo.cas.authentication.bypass.DefaultMultifactorAuthenticatonBypassResult;
 import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.support.WebUtils;
 
@@ -30,25 +31,18 @@ public class MultifactorAuthenticationBypassAction extends AbstractMultifactorAu
         if (requestContext.getCurrentTransition().getId().equals(CasWebflowConstants.TRANSITION_ID_BYPASS)) {
             LOGGER.debug("Bypass triggered by MFA webflow for MFA for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());
-            bypass.updateAuthenticationToRememberBypass(authentication, provider, "WEBFLOW");
-            LOGGER.debug("Authentication updated to remember bypass for user [{}] for provider [{}]",
-                    authentication.getPrincipal().getId(), provider.getId());
+            bypass.setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "WEBFLOW"));
             return yes();
         }
 
-        val result = bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request);
-        if (result.getKey()) {
+        val result = bypass.shouldExecute(authentication, service, provider, request);
+        if (result) {
             LOGGER.debug("Bypass rules determined MFA should execute for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());
-            bypass.updateAuthenticationToForgetBypass(authentication);
-            LOGGER.debug("Authentication updated to forget any existing bypass for user [{}] for provider [{}]",
-                    authentication.getPrincipal().getId(), provider.getId());
+            bypass.clearBypass(authentication);
             return no();
         }
         LOGGER.debug("Bypass rules determined MFA should NOT execute for user [{}] for provider [{}]",
-                authentication.getPrincipal().getId(), provider.getId());
-        bypass.updateAuthenticationToRememberBypass(authentication, provider, result.getValue());
-        LOGGER.debug("Authentication updated to remember bypass for user [{}] for provider [{}]",
                 authentication.getPrincipal().getId(), provider.getId());
         return yes();
     }

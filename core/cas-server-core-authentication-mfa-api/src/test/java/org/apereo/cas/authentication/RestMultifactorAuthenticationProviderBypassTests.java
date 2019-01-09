@@ -1,5 +1,6 @@
 package org.apereo.cas.authentication;
 
+import org.apereo.cas.authentication.bypass.RestMultifactorAuthenticationProviderBypass;
 import org.apereo.cas.authentication.mfa.MultifactorAuthenticationTestUtils;
 import org.apereo.cas.authentication.mfa.TestMultifactorAuthenticationProvider;
 import org.apereo.cas.category.RestfulApiCategory;
@@ -34,7 +35,7 @@ public class RestMultifactorAuthenticationProviderBypassTests {
             val props = new MultifactorAuthenticationProviderBypassProperties();
             props.getRest().setUrl("http://localhost:9316");
             val r = new RestMultifactorAuthenticationProviderBypass(props);
-            val res = r.shouldMultifactorAuthenticationProviderExecute(MultifactorAuthenticationTestUtils.getAuthentication("casuser"),
+            val res = r.shouldExecute(MultifactorAuthenticationTestUtils.getAuthentication("casuser"),
                 MultifactorAuthenticationTestUtils.getRegisteredService(), new TestMultifactorAuthenticationProvider(),
                 new MockHttpServletRequest());
             assertTrue(res);

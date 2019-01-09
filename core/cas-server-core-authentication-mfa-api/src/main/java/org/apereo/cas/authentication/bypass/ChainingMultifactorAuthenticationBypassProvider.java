@@ -1,8 +1,9 @@
-package org.apereo.cas.authentication;
+package org.apereo.cas.authentication.bypass;
 
+import org.apereo.cas.authentication.Authentication;
+import org.apereo.cas.authentication.MultifactorAuthenticationProvider;
+import org.apereo.cas.authentication.MultifactorAuthenticationProviderBypass;
 import org.apereo.cas.services.RegisteredService;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -20,15 +21,15 @@ public class ChainingMultifactorAuthenticationBypassProvider implements Multifac
     private final List<MultifactorAuthenticationProviderBypass> bypasses = new ArrayList<>();
 
     @Override
-    public Pair<Boolean, String> shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
-                                                                                final RegisteredService registeredService,
-                                                                                final MultifactorAuthenticationProvider provider,
-                                                                                final HttpServletRequest request) {
+    public boolean shouldExecute(final Authentication authentication,
+                                 final RegisteredService registeredService,
+                                 final MultifactorAuthenticationProvider provider,
+                                 final HttpServletRequest request) {
 
         return bypasses.stream()
-                .map(bypass -> bypass.shouldMultifactorAuthenticationProviderExecute(authentication, registeredService, provider, request))
-                .filter(p -> !p.getKey())
-                .findFirst().orElseGet(() -> Pair.of(Boolean.TRUE, null));
+                .map(bypass -> bypass.shouldExecute(authentication, registeredService, provider, request))
+                .filter(p -> !p)
+                .findFirst().orElse(true);
     }
 
     /**

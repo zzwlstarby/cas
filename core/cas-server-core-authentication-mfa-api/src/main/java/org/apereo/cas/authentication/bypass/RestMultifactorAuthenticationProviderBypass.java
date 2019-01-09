@@ -1,5 +1,8 @@
-package org.apereo.cas.authentication;
+package org.apereo.cas.authentication.bypass;
 
+import org.apereo.cas.authentication.Authentication;
+import org.apereo.cas.authentication.MultifactorAuthenticationProvider;
+import org.apereo.cas.authentication.MultifactorAuthenticationProviderBypass;
 import org.apereo.cas.configuration.model.support.mfa.MultifactorAuthenticationProviderBypassProperties;
 import org.apereo.cas.services.RegisteredService;
 import org.apereo.cas.util.CollectionUtils;
@@ -8,7 +11,6 @@ import org.apereo.cas.util.HttpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.tuple.Pair;
 
 import org.springframework.http.HttpStatus;
 
@@ -30,9 +32,9 @@ public class RestMultifactorAuthenticationProviderBypass implements MultifactorA
     private final MultifactorAuthenticationProviderBypassProperties bypassProperties;
 
     @Override
-    public Pair<Boolean, String> shouldMultifactorAuthenticationProviderExecute(final Authentication authentication, final RegisteredService registeredService,
-                                                                                final MultifactorAuthenticationProvider provider,
-                                                                                final HttpServletRequest request) {
+    public boolean shouldExecute(final Authentication authentication, final RegisteredService registeredService,
+                                 final MultifactorAuthenticationProvider provider,
+                                 final HttpServletRequest request) {
         try {
             val principal = authentication.getPrincipal();
             val rest = bypassProperties.getRest();
@@ -49,11 +51,12 @@ public class RestMultifactorAuthenticationProviderBypass implements MultifactorA
                 rest.getBasicAuthUsername(), rest.getBasicAuthPassword(), parameters, new HashMap<>());
             val shouldExecute = response.getStatusLine().getStatusCode() == HttpStatus.ACCEPTED.value();
             if (!shouldExecute) {
-                return Pair.of(Boolean.FALSE, "REST");
+                setBypass(authentication, new DefaultMultifactorAuthenticatonBypassResult(provider.getId(), "REST"));
             }
+            return shouldExecute;
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
+            return true;
         }
-        return Pair.of(Boolean.TRUE, null);
     }
 }

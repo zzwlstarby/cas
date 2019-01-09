@@ -1,5 +1,13 @@
 package org.apereo.cas.authentication;
 
+import org.apereo.cas.authentication.bypass.AuthenticationMultifactorAuthenticationProviderBypass;
+import org.apereo.cas.authentication.bypass.ChainingMultifactorAuthenticationBypassProvider;
+import org.apereo.cas.authentication.bypass.CredentialMultifactorAuthenticationProviderBypass;
+import org.apereo.cas.authentication.bypass.GroovyMultifactorAuthenticationProviderBypass;
+import org.apereo.cas.authentication.bypass.HttpRequestMultifactorAuthenticationProviderBypass;
+import org.apereo.cas.authentication.bypass.PrincipalMultifactorAuthenticationProviderBypass;
+import org.apereo.cas.authentication.bypass.RestMultifactorAuthenticationProviderBypass;
+import org.apereo.cas.authentication.bypass.ServiceMultifactorAuthenticationProviderBypass;
 import org.apereo.cas.authentication.principal.Principal;
 import org.apereo.cas.configuration.model.support.mfa.MultifactorAuthenticationProviderBypassProperties;
 import org.apereo.cas.services.RegisteredService;
@@ -10,6 +18,9 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.webflow.core.collection.LocalAttributeMap;
 import org.springframework.webflow.execution.Event;
@@ -152,12 +163,26 @@ public class MultifactorAuthenticationUtils {
         final MultifactorAuthenticationProviderBypassProperties props) {
 
         val bypass = new ChainingMultifactorAuthenticationBypassProvider();
-        bypass.addBypass(new DefaultMultifactorAuthenticationProviderBypass(props));
+        bypass.addBypass(new ServiceMultifactorAuthenticationProviderBypass(props));
 
-        if (props.getType() == MultifactorAuthenticationProviderBypassProperties.MultifactorProviderBypassTypes.GROOVY) {
+        if (StringUtils.isNotBlank(props.getPrincipalAttributeName())) {
+            bypass.addBypass(new PrincipalMultifactorAuthenticationProviderBypass(props));
+        }
+        if (StringUtils.isNotBlank(props.getAuthenticationAttributeName())
+            || StringUtils.isNotBlank(props.getAuthenticationHandlerName())
+            || StringUtils.isNotBlank(props.getAuthenticationMethodName())) {
+            bypass.addBypass(new AuthenticationMultifactorAuthenticationProviderBypass(props));
+        }
+        if (StringUtils.isNotBlank(props.getCredentialClassType())) {
+            bypass.addBypass(new CredentialMultifactorAuthenticationProviderBypass(props));
+        }
+        if (StringUtils.isNotBlank(props.getHttpRequestHeaders()) || StringUtils.isNotBlank(props.getHttpRequestRemoteAddress())) {
+            bypass.addBypass(new HttpRequestMultifactorAuthenticationProviderBypass(props));
+        }
+        if (props.getGroovy() != null) {
             bypass.addBypass(new GroovyMultifactorAuthenticationProviderBypass(props));
         }
-        if (props.getType() == MultifactorAuthenticationProviderBypassProperties.MultifactorProviderBypassTypes.REST) {
+        if (props.getRest() != null) {
             bypass.addBypass(new RestMultifactorAuthenticationProviderBypass(props));
         }
         return bypass;
@@ -288,5 +313,56 @@ public class MultifactorAuthenticationUtils {
             .stream()
             .filter(p -> p.matches(providerId))
             .findFirst();
+    }
+
+    /**
+     * Evaluate attribute rules for bypass.
+     *
+     * @param attrName               the attr name
+     * @param attrValue              the attr value
+     * @param attributes             the attributes
+     * @param matchIfNoValueProvided the force match on value
+     * @return true a matching attribute name/value is found
+     */
+    public static boolean locateMatchingAttributeValue(final String attrName, final String attrValue,
+                                                   final Map<String, Object> attributes,
+                                                   final boolean matchIfNoValueProvided) {
+        LOGGER.debug("Locating matching attribute [{}] with value [{}] amongst the attribute collection [{}]", attrName, attrValue, attributes);
+        if (StringUtils.isBlank(attrName)) {
+            LOGGER.debug("Failed to match since attribute name is undefined");
+            return false;
+        }
+
+        val names = attributes.entrySet()
+                .stream()
+                .filter(e -> {
+                    LOGGER.debug("Attempting to match [{}] against [{}]", attrName, e.getKey());
+                    return e.getKey().matches(attrName);
+                })
+                .collect(Collectors.toSet());
+
+        LOGGER.debug("Found [{}] attributes relevant for multifactor authentication bypass", names.size());
+
+        if (names.isEmpty()) {
+            return false;
+        }
+
+        if (StringUtils.isBlank(attrValue)) {
+            LOGGER.debug("No attribute value to match is provided; Match result is set to [{}]", matchIfNoValueProvided);
+            return matchIfNoValueProvided;
+        }
+
+        val values = names
+                .stream()
+                .filter(e -> {
+                    val valuesCol = CollectionUtils.toCollection(e.getValue());
+                    LOGGER.debug("Matching attribute [{}] with values [{}] against [{}]", e.getKey(), valuesCol, attrValue);
+                    return valuesCol
+                            .stream()
+                            .anyMatch(v -> v.toString().matches(attrValue));
+                }).collect(Collectors.toSet());
+
+        LOGGER.debug("Matching attribute values remaining are [{}]", values);
+        return !values.isEmpty();
     }
 }

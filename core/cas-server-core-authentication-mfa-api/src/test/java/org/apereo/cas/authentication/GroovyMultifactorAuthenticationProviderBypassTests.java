@@ -1,5 +1,6 @@
 package org.apereo.cas.authentication;
 
+import org.apereo.cas.authentication.bypass.GroovyMultifactorAuthenticationProviderBypass;
 import org.apereo.cas.authentication.mfa.TestMultifactorAuthenticationProvider;
 import org.apereo.cas.authentication.principal.Principal;
 import org.apereo.cas.configuration.model.support.mfa.MultifactorAuthenticationProviderBypassProperties;
@@ -41,6 +42,6 @@ public class GroovyMultifactorAuthenticationProviderBypassTests {
         when(registeredService.getName()).thenReturn("Service");
         when(registeredService.getServiceId()).thenReturn("http://app.org");
         when(registeredService.getId()).thenReturn(1000L);
-        return groovy.shouldMultifactorAuthenticationProviderExecute(authentication, registeredService, provider, request);
+        return groovy.shouldExecute(authentication, registeredService, provider, request);
     }
 }

@@ -2,7 +2,6 @@ package org.apereo.cas.authentication;
 
 import org.apereo.cas.services.RegisteredService;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.core.Ordered;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,16 +22,6 @@ public interface MultifactorAuthenticationProviderBypass extends Serializable, O
     String AUTHENTICATION_ATTRIBUTE_BYPASS_MFA = "bypassMultifactorAuthentication";
 
     /**
-     * bypass mfa for provider id authn attribute.
-     */
-    String AUTHENTICATION_ATTRIBUTE_BYPASS_MFA_PROVIDER = "bypassedMultifactorAuthenticationProviderId";
-
-    /**
-     * bypass mfa origin.
-     */
-    String AUTHENTICATION_ATTTRIBUTE_BYPASS_MFA_ORIGIN = "bypassedMultifactrorAuthenticationOrigin";
-
-    /**
      * Eval current bypass rules for the provider.
      *
      * @param authentication    the authentication
@@ -41,32 +30,28 @@ public interface MultifactorAuthenticationProviderBypass extends Serializable, O
      * @param request           the request
      * @return false is request isn't supported and can be bypassed. true otherwise.
      */
-    Pair<Boolean, String> shouldMultifactorAuthenticationProviderExecute(Authentication authentication, RegisteredService registeredService,
-                                                                         MultifactorAuthenticationProvider provider,
-                                                                         HttpServletRequest request);
+    boolean shouldExecute(Authentication authentication, RegisteredService registeredService,
+                          MultifactorAuthenticationProvider provider,
+                          HttpServletRequest request);
 
     /**
      * Method will remove any previous bypass set in the authentication.
      *
      * @param authentication - the authentication
      */
-    default void updateAuthenticationToForgetBypass(final Authentication authentication) {
-        authentication.addAttribute(AUTHENTICATION_ATTRIBUTE_BYPASS_MFA, Boolean.FALSE);
+    default void clearBypass(final Authentication authentication) {
+        authentication.getAttributes().remove(AUTHENTICATION_ATTRIBUTE_BYPASS_MFA);
     }
 
     /**
      * Method will set the bypass into the authentication.
      *
      * @param authentication - the authentication
-     * @param provider - the provider
-     * @param bypassOrigin - the origin of the bypass
-     * */
-    default void updateAuthenticationToRememberBypass(final Authentication authentication,
-                                                      final MultifactorAuthenticationProvider provider,
-                                                      final String bypassOrigin) {
-        authentication.addAttribute(AUTHENTICATION_ATTRIBUTE_BYPASS_MFA, Boolean.TRUE);
-        authentication.addAttribute(AUTHENTICATION_ATTRIBUTE_BYPASS_MFA_PROVIDER, provider.getId());
-        authentication.addAttribute(AUTHENTICATION_ATTTRIBUTE_BYPASS_MFA_ORIGIN, bypassOrigin);
+     * @param result - the result
+     */
+    default void setBypass(final Authentication authentication,
+                           final MultifactorAuthenticationBypassResult result) {
+        authentication.addAttribute(AUTHENTICATION_ATTRIBUTE_BYPASS_MFA, result);
     }
 
     @Override

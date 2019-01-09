@@ -2,6 +2,7 @@ package org.apereo.cas.authentication.mfa;
 
 import org.apereo.cas.authentication.DefaultMultifactorAuthenticationContextValidator;
 import org.apereo.cas.authentication.MultifactorAuthenticationProviderBypass;
+import org.apereo.cas.authentication.bypass.DefaultMultifactorAuthenticatonBypassResult;
 import org.apereo.cas.util.CollectionUtils;
 
 import lombok.val;
@@ -89,8 +90,8 @@ public class DefaultMultifactorAuthenticationContextValidatorTests {
         val authentication = MultifactorAuthenticationTestUtils.getAuthentication(
             MultifactorAuthenticationTestUtils.getPrincipal("casuser"),
             CollectionUtils.wrap("authn_method", "mfa-other",
-                MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA, true,
-                MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA_PROVIDER, "mfa-dummy"));
+                MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA,
+                new DefaultMultifactorAuthenticatonBypassResult("mfa-dummy", "dummy")));
         val result = v.validate(authentication,
             "mfa-dummy", MultifactorAuthenticationTestUtils.getRegisteredService());
         assertTrue(result.getKey());
@@ -104,8 +105,8 @@ public class DefaultMultifactorAuthenticationContextValidatorTests {
         val authentication = MultifactorAuthenticationTestUtils.getAuthentication(
             MultifactorAuthenticationTestUtils.getPrincipal("casuser"),
             CollectionUtils.wrap("authn_method", "mfa-other",
-                MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA, true,
-                MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA_PROVIDER, "mfa-other"));
+                MultifactorAuthenticationProviderBypass.AUTHENTICATION_ATTRIBUTE_BYPASS_MFA,
+                new DefaultMultifactorAuthenticatonBypassResult("mfa-other", "other")));
         val result = v.validate(authentication,
             "mfa-dummy", MultifactorAuthenticationTestUtils.getRegisteredService());
         assertFalse(result.getKey());
