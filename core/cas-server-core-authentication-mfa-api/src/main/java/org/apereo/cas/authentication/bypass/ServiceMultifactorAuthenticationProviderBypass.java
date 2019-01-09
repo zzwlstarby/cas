@@ -24,10 +24,10 @@ public class ServiceMultifactorAuthenticationProviderBypass implements Multifact
     private final MultifactorAuthenticationProviderBypassProperties bypassProperties;
 
     @Override
-    public boolean shouldExecute(final Authentication authentication,
-                                 final RegisteredService registeredService,
-                                 final MultifactorAuthenticationProvider provider,
-                                 final HttpServletRequest request) {
+    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
+                                                                  final RegisteredService registeredService,
+                                                                  final MultifactorAuthenticationProvider provider,
+                                                                  final HttpServletRequest request) {
 
         if (registeredService != null
                 && registeredService.getMultifactorPolicy() != null

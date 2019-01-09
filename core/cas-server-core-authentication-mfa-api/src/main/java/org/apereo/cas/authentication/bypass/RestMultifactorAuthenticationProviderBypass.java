@@ -32,9 +32,9 @@ public class RestMultifactorAuthenticationProviderBypass implements MultifactorA
     private final MultifactorAuthenticationProviderBypassProperties bypassProperties;
 
     @Override
-    public boolean shouldExecute(final Authentication authentication, final RegisteredService registeredService,
-                                 final MultifactorAuthenticationProvider provider,
-                                 final HttpServletRequest request) {
+    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication, final RegisteredService registeredService,
+                                                                  final MultifactorAuthenticationProvider provider,
+                                                                  final HttpServletRequest request) {
         try {
             val principal = authentication.getPrincipal();
             val rest = bypassProperties.getRest();

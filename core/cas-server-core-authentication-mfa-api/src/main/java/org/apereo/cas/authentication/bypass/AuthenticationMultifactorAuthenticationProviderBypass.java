@@ -28,10 +28,10 @@ public class AuthenticationMultifactorAuthenticationProviderBypass implements Mu
     private final MultifactorAuthenticationProviderBypassProperties bypassProperties;
 
     @Override
-    public boolean shouldExecute(final Authentication authentication,
-                                 final RegisteredService registeredService,
-                                 final MultifactorAuthenticationProvider provider,
-                                 final HttpServletRequest request) {
+    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
+                                                                  final RegisteredService registeredService,
+                                                                  final MultifactorAuthenticationProvider provider,
+                                                                  final HttpServletRequest request) {
         val principal = authentication.getPrincipal();
         val bypassByAuthn = locateMatchingAttributeBasedOnAuthenticationAttributes(bypassProperties, authentication);
         if (bypassByAuthn) {

@@ -21,13 +21,13 @@ public class ChainingMultifactorAuthenticationBypassProvider implements Multifac
     private final List<MultifactorAuthenticationProviderBypass> bypasses = new ArrayList<>();
 
     @Override
-    public boolean shouldExecute(final Authentication authentication,
-                                 final RegisteredService registeredService,
-                                 final MultifactorAuthenticationProvider provider,
-                                 final HttpServletRequest request) {
+    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
+                                                                  final RegisteredService registeredService,
+                                                                  final MultifactorAuthenticationProvider provider,
+                                                                  final HttpServletRequest request) {
 
         return bypasses.stream()
-                .map(bypass -> bypass.shouldExecute(authentication, registeredService, provider, request))
+                .map(bypass -> bypass.shouldMultifactorAuthenticationProviderExecute(authentication, registeredService, provider, request))
                 .filter(p -> !p)
                 .findFirst().orElse(true);
     }

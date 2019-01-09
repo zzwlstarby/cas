@@ -44,10 +44,10 @@ public class HttpRequestMultifactorAuthenticationProviderBypass implements Multi
     }
 
     @Override
-    public boolean shouldExecute(final Authentication authentication,
-                                 final RegisteredService registeredService,
-                                 final MultifactorAuthenticationProvider provider,
-                                 final HttpServletRequest request) {
+    public boolean shouldMultifactorAuthenticationProviderExecute(final Authentication authentication,
+                                                                  final RegisteredService registeredService,
+                                                                  final MultifactorAuthenticationProvider provider,
+                                                                  final HttpServletRequest request) {
         val principal = authentication.getPrincipal();
         val bypassByHttpRequest = locateMatchingHttpRequest(authentication, request);
         if (bypassByHttpRequest) {

@@ -43,8 +43,9 @@ public class DefaultRequestedAuthenticationContextValidator implements Requested
 
         if (provider.isPresent()) {
             val bypassEvaluator = provider.get().getBypassEvaluator();
-            if (!bypassEvaluator.shouldExecute(authentication, registeredService, provider.get(), request)) {
+            if (!bypassEvaluator.shouldMultifactorAuthenticationProviderExecute(authentication, registeredService, provider.get(), request)) {
                 LOGGER.debug("MFA provider [{}] was determined that it should be bypassed for this service request [{}]", providerId, assertion.getService());
+                bypassEvaluator.updateAuthenticationToRememberBypass(authentication, provider.get());
                 return Pair.of(Boolean.TRUE, Optional.empty());
             }
         }

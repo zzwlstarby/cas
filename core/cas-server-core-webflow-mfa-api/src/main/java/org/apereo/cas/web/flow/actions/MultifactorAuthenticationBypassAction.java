@@ -33,7 +33,7 @@ public class MultifactorAuthenticationBypassAction extends AbstractMultifactorAu
             return yes();
         }
 
-        val result = bypass.shouldExecute(authentication, service, provider, request);
+        val result = bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request);
         if (result) {
             LOGGER.debug("Bypass rules determined MFA should execute for user [{}] for provider [{}]",
                     authentication.getPrincipal().getId(), provider.getId());

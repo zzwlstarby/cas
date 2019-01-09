@@ -56,7 +56,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
 
@@ -89,7 +89,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -152,7 +152,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -187,7 +187,7 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
         when(policy.isBypassEnabled()).thenReturn(true);
         when(service.getMultifactorPolicy()).thenReturn(policy);
 
-        assertFalse(bypass.shouldExecute(authentication, service, provider, request));
+        assertFalse(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 
     @Test
@@ -201,6 +201,6 @@ public class DefaultMultifactorAuthenticationProviderBypassTests {
 
         val provider = TestMultifactorAuthenticationProvider.registerProviderIntoApplicationContext(applicationContext);
         val service = MultifactorAuthenticationTestUtils.getRegisteredService();
-        assertTrue(bypass.shouldExecute(authentication, service, provider, request));
+        assertTrue(bypass.shouldMultifactorAuthenticationProviderExecute(authentication, service, provider, request));
     }
 }
